@@ -1,15 +1,13 @@
-FROM ubuntu:14.04
-MAINTAINER CenturyLinkLabs
+FROM stackbrew/ubuntu:12.04
+MAINTAINER Lucas Carlson <lucas@rufy.com>
 
-# Install packages
-ENV DEBIAN_FRONTEND noninteractive
-RUN apt-get update && apt-get -y upgrade
+RUN apt-get update -qq && apt-get install -y mysql-server-5.5
 
-# Add image configuration and scripts
-RUN apt-get install -y mysql-server
-ADD my.cnf /etc/mysql/conf.d/my.cnf 
-ADD run /usr/local/bin/run
-RUN chmod +x /usr/local/bin/run
+ADD my.cnf /etc/mysql/conf.d/my.cnf
+RUN chmod 664 /etc/mysql/conf.d/my.cnf
+ADD run.sh /run.sh
+RUN chmod +x /run.sh
 
 VOLUME ["/var/lib/mysql"]
-CMD ["/usr/local/bin/run"]
+EXPOSE 3306
+CMD ["/run.sh"]
